@@ -1,0 +1,37 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Alerts</h1>
+      <p>{{ unreadCount }} unread alerts need attention.</p>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="markAllAsRead()" [disabled]="unreadCount === 0">
+      <mat-icon>done_all</mat-icon>
+      Mark All Read
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="42"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="alert-list">
+    <mat-card *ngFor="let alert of alerts" class="alert-card" [class.unread]="!alert.isRead">
+      <div class="alert-content">
+        <div class="alert-main">
+          <mat-chip class="status-chip" [ngClass]="alert.alertType.toLowerCase()">{{ alert.alertType }}</mat-chip>
+          <p>{{ alert.message }}</p>
+          <span>{{ alert.createdAt | date:'medium' }} • {{ alert.referenceType }} #{{ alert.referenceId }}</span>
+        </div>
+
+        <button mat-stroked-button *ngIf="!alert.isRead" (click)="markAsRead(alert)">
+          Mark Read
+        </button>
+      </div>
+    </mat-card>
+
+    <div *ngIf="alerts.length === 0" class="empty-state">
+      There are no alerts right now.
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <div class="login-header">
+        <h1>StockPro</h1>
+        <p>Inventory Management System</p>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="error-banner" *ngIf="error">{{ error }}</div>
+
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" required placeholder="admin@stockpro.com" />
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required />
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width login-btn" [disabled]="loading">
+          <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+          <span *ngIf="!loading">Sign In</span>
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <p class="register-link">Don't have an account? <a routerLink="/register">Register</a></p>
+    </mat-card-actions>
+  </mat-card>
+</div>

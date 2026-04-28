@@ -1,0 +1,76 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Warehouses</h1>
+      <p>Track capacity and move stock between locations.</p>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="openWarehouseDialog()" *ngIf="canWrite">
+      <mat-icon>add</mat-icon>
+      New Warehouse
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="44"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="warehouse-grid">
+    <mat-card *ngFor="let warehouse of warehouses" class="warehouse-card">
+      <div class="card-top">
+        <div>
+          <h2>{{ warehouse.name }}</h2>
+          <p>{{ warehouse.location }}</p>
+        </div>
+
+        <span class="status-chip" [ngClass]="(warehouse.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
+          {{ warehouse.isActive ? 'ACTIVE' : 'INACTIVE' }}
+        </span>
+      </div>
+
+      <div class="meta-grid">
+        <div>
+          <span>Capacity</span>
+          <strong>{{ warehouse.capacity }}</strong>
+        </div>
+        <div>
+          <span>Total Units</span>
+          <strong>{{ getWarehouseUnits(warehouse.id) }}</strong>
+        </div>
+        <div>
+          <span>Products</span>
+          <strong>{{ getWarehouseStock(warehouse.id).length }}</strong>
+        </div>
+      </div>
+
+      <div class="actions" *ngIf="canWrite">
+        <button mat-stroked-button (click)="openWarehouseDialog(warehouse)">Edit</button>
+        <button mat-stroked-button (click)="toggleStatus(warehouse)">
+          {{ warehouse.isActive ? 'Deactivate' : 'Activate' }}
+        </button>
+        <button mat-stroked-button (click)="openStockDialog('ADD', warehouse)">Add Stock</button>
+        <button mat-stroked-button (click)="openStockDialog('DEDUCT', warehouse)">Deduct</button>
+        <button mat-flat-button color="primary" (click)="openTransferDialog(warehouse)">Transfer</button>
+      </div>
+
+      <div class="stock-panel">
+        <div class="stock-header">
+          <h3>Current Stock</h3>
+          <span>{{ getWarehouseStock(warehouse.id).length }} items</span>
+        </div>
+
+        <div *ngIf="getWarehouseStock(warehouse.id).length === 0" class="empty-state">
+          No stock recorded for this warehouse yet.
+        </div>
+
+        <div *ngFor="let stock of getWarehouseStock(warehouse.id)" class="stock-row">
+          <div>
+            <strong>{{ stock.productName }}</strong>
+            <span>Product #{{ stock.productId }}</span>
+          </div>
+          <span>{{ stock.quantity }}</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

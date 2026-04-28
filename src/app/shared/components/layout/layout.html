@@ -1,0 +1,62 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+
+    <div class="brand">
+      <h1>StockPro</h1>
+      <p>{{ fullName }}</p>
+      <span class="status-chip" [ngClass]="role.toLowerCase()">{{ role }}</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a mat-button routerLink="/dashboard" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a mat-button routerLink="/products" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>inventory_2</mat-icon>
+        <span>Products</span>
+      </a>
+      <a mat-button routerLink="/suppliers" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>business</mat-icon>
+        <span>Suppliers</span>
+      </a>
+      <a mat-button routerLink="/warehouses" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>warehouse</mat-icon>
+        <span>Warehouses</span>
+      </a>
+      <a mat-button routerLink="/purchase-orders" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Purchase Orders</span>
+      </a>
+      <a mat-button routerLink="/movements" routerLinkActive="active-link" class="nav-item">
+        <mat-icon>swap_horiz</mat-icon>
+        <span>Movements</span>
+      </a>
+      <a mat-button routerLink="/alerts" routerLinkActive="active-link" class="nav-item" *ngIf="canViewAlerts">
+        <mat-icon>notifications</mat-icon>
+        <span>Alerts</span>
+        <span class="nav-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </a>
+      <a mat-button routerLink="/reports" routerLinkActive="active-link" class="nav-item" *ngIf="canViewReports">
+        <mat-icon>bar_chart</mat-icon>
+        <span>Reports</span>
+      </a>
+      <a mat-button routerLink="/users" routerLinkActive="active-link" class="nav-item" *ngIf="isAdmin">
+        <mat-icon>people</mat-icon>
+        <span>Users</span>
+      </a>
+    </nav>
+
+    <div class="signout">
+      <button mat-button (click)="logout()" class="signout-btn">
+        <mat-icon>logout</mat-icon>
+        <span>Sign Out</span>
+      </button>
+    </div>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-content">
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

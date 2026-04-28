@@ -1,0 +1,89 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Reports</h1>
+      <p>Stock valuation and low stock exposure across the business.</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="44"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && stockValue && lowStock" class="report-grid">
+    <div class="summary-grid">
+      <mat-card class="summary-card">
+        <span>Total Stock Value</span>
+        <strong>{{ stockValue.totalStockValue | currency:'INR':'symbol':'1.2-2' }}</strong>
+      </mat-card>
+      <mat-card class="summary-card">
+        <span>Total Products</span>
+        <strong>{{ stockValue.totalProducts }}</strong>
+      </mat-card>
+      <mat-card class="summary-card">
+        <span>Total Units</span>
+        <strong>{{ stockValue.totalUnits }}</strong>
+      </mat-card>
+      <mat-card class="summary-card danger">
+        <span>Low Stock Products</span>
+        <strong>{{ lowStock.totalLowStockProducts }}</strong>
+      </mat-card>
+    </div>
+
+    <mat-card>
+      <div class="table-title">Stock Value Breakdown</div>
+      <table mat-table [dataSource]="stockValue.breakdown" class="mat-card-table">
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef>Product</th>
+          <td mat-cell *matCellDef="let item">{{ item.productName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef matTooltip="SKU = Stock Keeping Unit">SKU</th>
+          <td mat-cell *matCellDef="let item">{{ item.sku }}</td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef>Quantity</th>
+          <td mat-cell *matCellDef="let item">{{ item.quantity }}</td>
+        </ng-container>
+        <ng-container matColumnDef="unitPrice">
+          <th mat-header-cell *matHeaderCellDef>Unit Price</th>
+          <td mat-cell *matCellDef="let item">{{ item.unitPrice | currency:'INR':'symbol':'1.2-2' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalValue">
+          <th mat-header-cell *matHeaderCellDef>Total Value</th>
+          <td mat-cell *matCellDef="let item">{{ item.totalValue | currency:'INR':'symbol':'1.2-2' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="stockValueColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: stockValueColumns;"></tr>
+      </table>
+    </mat-card>
+
+    <mat-card>
+      <div class="table-title">Low Stock</div>
+      <table mat-table [dataSource]="lowStock.items" class="mat-card-table">
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef>Product</th>
+          <td mat-cell *matCellDef="let item">{{ item.productName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef matTooltip="SKU = Stock Keeping Unit">SKU</th>
+          <td mat-cell *matCellDef="let item">{{ item.sku }}</td>
+        </ng-container>
+        <ng-container matColumnDef="currentQuantity">
+          <th mat-header-cell *matHeaderCellDef>Current</th>
+          <td mat-cell *matCellDef="let item">{{ item.currentQuantity }}</td>
+        </ng-container>
+        <ng-container matColumnDef="reorderLevel">
+          <th mat-header-cell *matHeaderCellDef>Reorder Level</th>
+          <td mat-cell *matCellDef="let item">{{ item.reorderLevel }}</td>
+        </ng-container>
+        <ng-container matColumnDef="shortage">
+          <th mat-header-cell *matHeaderCellDef>Shortage</th>
+          <td mat-cell *matCellDef="let item">{{ item.shortage }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="lowStockColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: lowStockColumns;"></tr>
+      </table>
+    </mat-card>
+  </div>
+</div>

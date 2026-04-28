@@ -1,0 +1,99 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Purchase Orders</h1>
+      <p>Create, approve, receive, and monitor order flow.</p>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="openCreateDialog()" *ngIf="canWrite">
+      <mat-icon>add</mat-icon>
+      <span matTooltip="PO = Purchase Order">New PO</span>
+    </button>
+  </div>
+
+  <mat-card>
+    <div class="toolbar">
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="statusFilter">
+          <mat-option value="ALL">All statuses</mat-option>
+          <mat-option value="DRAFT">Draft</mat-option>
+          <mat-option value="APPROVED">Approved</mat-option>
+          <mat-option value="PARTIALLY_RECEIVED">Partially Received</mat-option>
+          <mat-option value="RECEIVED">Received</mat-option>
+          <mat-option value="CANCELLED">Cancelled</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading" class="table-shell">
+      <table mat-table [dataSource]="filteredPurchaseOrders" class="mat-card-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef matTooltip="PO = Purchase Order">PO</th>
+          <td mat-cell *matCellDef="let po">
+            <div class="primary-cell">
+              <strong>#{{ po.id }}</strong>
+              <span>{{ po.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="supplier">
+          <th mat-header-cell *matHeaderCellDef>Supplier</th>
+          <td mat-cell *matCellDef="let po">{{ getSupplierName(po.supplierId) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let po">
+            <span class="status-chip" [ngClass]="po.status.toLowerCase()">{{ po.status }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expectedDate">
+          <th mat-header-cell *matHeaderCellDef>Expected</th>
+          <td mat-cell *matCellDef="let po">{{ po.expectedDate | date:'mediumDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="items">
+          <th mat-header-cell *matHeaderCellDef>Items</th>
+          <td mat-cell *matCellDef="let po">
+            <div class="item-list">
+              <span *ngFor="let item of getVisibleItems(po)">
+                {{ getProductName(item.productId) }} to {{ getWarehouseName(item.warehouseId) }}
+              </span>
+              <span *ngIf="po.items.length > 2">+{{ po.items.length - 2 }} more</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let po">{{ getOrderTotal(po) | currency:'INR':'symbol':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions" *ngIf="canWrite">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let po">
+            <div class="row-actions">
+              <button mat-stroked-button *ngIf="canApprove(po)" (click)="approve(po)">Approve</button>
+              <button mat-stroked-button *ngIf="canReceive(po)" (click)="receive(po)">Receive</button>
+              <button mat-button color="warn" *ngIf="canCancel(po)" (click)="cancel(po)">Cancel</button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="filteredPurchaseOrders.length === 0" class="empty-state">
+        No purchase orders found for the selected status.
+      </div>
+    </div>
+  </mat-card>
+</div>

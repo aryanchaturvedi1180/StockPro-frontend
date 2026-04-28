@@ -1,0 +1,102 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome back, {{ fullName }}. Here is your inventory overview.</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-center">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <mat-card class="kpi-card">
+        <mat-card-content>
+          <div class="kpi-content">
+            <div>
+              <p class="kpi-label">Total Products</p>
+              <p class="kpi-value">{{ totalProducts }}</p>
+              <p class="kpi-sub green">{{ activeProducts }} active</p>
+            </div>
+            <mat-icon class="kpi-icon blue">inventory_2</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <mat-card-content>
+          <div class="kpi-content">
+            <div>
+              <p class="kpi-label">Warehouses</p>
+              <p class="kpi-value">{{ totalWarehouses }}</p>
+              <p class="kpi-sub">Active locations</p>
+            </div>
+            <mat-icon class="kpi-icon purple">warehouse</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <mat-card-content>
+          <div class="kpi-content">
+            <div>
+              <p class="kpi-label">Unread Alerts</p>
+              <p class="kpi-value" [class.red]="unreadAlerts > 0">{{ unreadAlerts }}</p>
+              <p class="kpi-sub">Require attention</p>
+            </div>
+            <mat-icon class="kpi-icon red">notifications</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <mat-card-content>
+          <div class="kpi-content">
+            <div>
+              <p class="kpi-label" matTooltip="POs = Purchase Orders">Pending POs</p>
+              <p class="kpi-value amber">{{ pendingPOs }}</p>
+              <p class="kpi-sub">Awaiting approval</p>
+            </div>
+            <mat-icon class="kpi-icon amber">receipt_long</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Bottom panels -->
+    <div class="panels-grid">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Recent Alerts</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="recentAlerts.length === 0" class="empty-msg">No alerts</p>
+          <div *ngFor="let alert of recentAlerts" class="alert-item">
+            <span class="status-chip" [ngClass]="alert.alertType.toLowerCase()">{{ alert.alertType }}</span>
+            <p class="alert-msg">{{ alert.message }}</p>
+            <span *ngIf="!alert.isRead" class="unread-dot"></span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Draft Purchase Orders</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="draftPOs.length === 0" class="empty-msg">No draft orders</p>
+          <div *ngFor="let po of draftPOs" class="po-item">
+            <div>
+              <p class="po-id" matTooltip="PO = Purchase Order">PO #{{ po.id }}</p>
+              <p class="po-supplier">Supplier {{ po.supplierId }}</p>
+            </div>
+            <span class="status-chip draft">{{ po.status }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

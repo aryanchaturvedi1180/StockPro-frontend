@@ -1,0 +1,68 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <div class="login-header">
+        <h1>StockPro</h1>
+        <p>Create your account</p>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="error-banner" *ngIf="error">{{ error }}</div>
+      <div class="success-banner" *ngIf="success">
+        Registration successful! <a routerLink="/login">Login now</a>
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput [(ngModel)]="fullName" name="fullName" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Phone</mat-label>
+          <input matInput [(ngModel)]="phone" name="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" [(ngModel)]="password" name="password" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="role" name="role" (ngModelChange)="onRoleChange($event)">
+            <mat-option value="STAFF">Staff</mat-option>
+            <mat-option value="MANAGER">Manager</mat-option>
+            <mat-option value="ADMIN">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="role === 'ADMIN'">
+          <mat-label>Admin Secret</mat-label>
+          <input matInput type="password" [(ngModel)]="adminSecret" name="adminSecret" [required]="role === 'ADMIN'" />
+          <mat-hint>Required for admin registration</mat-hint>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="full-width login-btn"
+          [disabled]="loading || (role === 'ADMIN' && !adminSecret.trim())"
+        >
+          {{ loading ? 'Registering...' : 'Register' }}
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <p class="register-link">Already have an account? <a routerLink="/login">Sign in</a></p>
+    </mat-card-actions>
+  </mat-card>
+</div>
