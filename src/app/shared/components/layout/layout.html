@@ -2,9 +2,9 @@
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
 
     <div class="brand">
-      <h1>StockPro</h1>
+      <h1><mat-icon>inventory</mat-icon> StockPro</h1>
       <p>{{ fullName }}</p>
-      <span class="status-chip" [ngClass]="role.toLowerCase()">{{ role }}</span>
+      <span class="status-badge" [ngClass]="role.toLowerCase()">{{ role }}</span>
     </div>
 
     <nav class="nav-menu">
@@ -56,7 +56,9 @@
 
   </mat-sidenav>
 
-  <mat-sidenav-content class="main-content">
-    <router-outlet />
+  <mat-sidenav-content class="main-wrapper">
+    <div class="main-content">
+      <router-outlet />
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

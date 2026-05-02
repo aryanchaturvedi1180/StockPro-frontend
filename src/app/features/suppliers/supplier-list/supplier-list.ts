@@ -32,59 +32,220 @@ interface SupplierDialogData {
     MatButtonModule
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.supplier ? 'Edit Supplier' : 'Add Supplier' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="dialog-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Supplier Name</mat-label>
-          <input matInput formControlName="name" />
-        </mat-form-field>
+    <div class="enterprise-dialog">
+      <div class="dialog-header">
+        <h2>{{ data.supplier ? 'Edit Supplier' : 'Add Supplier' }}</h2>
+        <p class="subtitle">Please fill in the supplier details below.</p>
+      </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Contact Name</mat-label>
-          <input matInput formControlName="contactName" />
-        </mat-form-field>
+      <div class="dialog-body">
+        <form [formGroup]="form" class="enterprise-form">
+          <div class="form-section">
+            <h3 class="section-title">General Info</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Supplier Name</label>
+                <input type="text" formControlName="name" class="input-field" placeholder="e.g. Acme Corp" />
+                <span class="error-text" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+                  Supplier Name is required
+                </span>
+              </div>
+              <div class="form-group">
+                <label>Contact Name</label>
+                <input type="text" formControlName="contactName" class="input-field" placeholder="e.g. Jane Doe" />
+                <span class="error-text" *ngIf="form.get('contactName')?.invalid && form.get('contactName')?.touched">
+                  Contact Name is required
+                </span>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" formControlName="email" class="input-field" placeholder="e.g. jane@acme.com" />
+                <span class="error-text" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+                  Valid email is required
+                </span>
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" formControlName="phone" class="input-field" placeholder="e.g. +1 555-0100" />
+                <span class="error-text" *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched">
+                  Phone is required
+                </span>
+              </div>
+            </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" />
-        </mat-form-field>
+            <div class="form-row">
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label>Address</label>
+                <textarea formControlName="address" class="input-field" rows="3" placeholder="Full address details..."></textarea>
+                <span class="error-text" *ngIf="form.get('address')?.invalid && form.get('address')?.touched">
+                  Address is required
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Phone</mat-label>
-          <input matInput formControlName="phone" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-span">
-          <mat-label>Address</mat-label>
-          <textarea matInput rows="3" formControlName="address"></textarea>
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
-      <button mat-flat-button color="primary" type="button" [disabled]="form.invalid" (click)="save()">
-        Save
-      </button>
-    </mat-dialog-actions>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" (click)="dialogRef.close()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="save()">Save Supplier</button>
+      </div>
+    </div>
   `,
   styles: [`
-    .dialog-form {
+    :host { display: block; }
+    
+    .enterprise-dialog {
+      display: flex;
+      flex-direction: column;
+      max-height: 88vh;
+      background: var(--surface);
+      margin: -24px; 
+    }
+
+    .dialog-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+
+    .dialog-header h2 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .dialog-body {
+      padding: 32px;
+      overflow-y: auto;
+      background: var(--background);
+      flex-grow: 1;
+    }
+
+    .enterprise-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: var(--surface);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-bottom: var(--spacing-3);
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-row {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px var(--spacing-3);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+
+    .input-field:hover { border-color: var(--text-muted); }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .input-field.ng-invalid.ng-touched { border-color: var(--danger); }
+    .input-field.ng-invalid.ng-touched:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+
+    .error-text {
+      font-size: 12.5px;
+      color: var(--danger);
+      margin-top: 2px;
+    }
+
+    .dialog-footer {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      justify-content: flex-end;
       gap: 16px;
-      min-width: min(760px, 82vw);
-      padding-top: 8px;
+      border-bottom-left-radius: var(--radius-md);
+      border-bottom-right-radius: var(--radius-md);
+      flex-shrink: 0;
     }
 
-    .full-span {
-      grid-column: 1 / -1;
+    .btn {
+      padding: 10px var(--spacing-6);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    @media (max-width: 720px) {
-      .dialog-form {
-        grid-template-columns: 1fr;
-        min-width: auto;
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-secondary:hover:not(:disabled) { background-color: var(--background); }
+    .btn-primary { background-color: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .dialog-header, .dialog-body, .dialog-footer {
+        padding-left: var(--spacing-5);
+        padding-right: var(--spacing-5);
       }
     }
   `]
@@ -177,7 +338,7 @@ export class SupplierListComponent implements OnInit {
   openDialog(supplier: Supplier | null = null): void {
     if (!this.canWrite) return;
     this.dialog.open(SupplierDialogComponent, {
-      width: '760px',
+      width: 'min(92vw, 980px)',
       data: { supplier }
     }).afterClosed().subscribe((payload?: SupplierRequest) => {
       if (!payload) {

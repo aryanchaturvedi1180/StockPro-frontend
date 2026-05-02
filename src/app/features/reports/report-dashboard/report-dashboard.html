@@ -12,78 +12,64 @@
 
   <div *ngIf="!loading && stockValue && lowStock" class="report-grid">
     <div class="summary-grid">
-      <mat-card class="summary-card">
+      <div class="item-card summary-card">
         <span>Total Stock Value</span>
         <strong>{{ stockValue.totalStockValue | currency:'INR':'symbol':'1.2-2' }}</strong>
-      </mat-card>
-      <mat-card class="summary-card">
+      </div>
+      <div class="item-card summary-card">
         <span>Total Products</span>
         <strong>{{ stockValue.totalProducts }}</strong>
-      </mat-card>
-      <mat-card class="summary-card">
+      </div>
+      <div class="item-card summary-card">
         <span>Total Units</span>
         <strong>{{ stockValue.totalUnits }}</strong>
-      </mat-card>
-      <mat-card class="summary-card danger">
+      </div>
+      <div class="item-card summary-card danger">
         <span>Low Stock Products</span>
         <strong>{{ lowStock.totalLowStockProducts }}</strong>
-      </mat-card>
+      </div>
     </div>
 
-    <mat-card>
-      <div class="table-title">Stock Value Breakdown</div>
-      <table mat-table [dataSource]="stockValue.breakdown" class="mat-card-table">
-        <ng-container matColumnDef="productName">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
-          <td mat-cell *matCellDef="let item">{{ item.productName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="sku">
-          <th mat-header-cell *matHeaderCellDef matTooltip="SKU = Stock Keeping Unit">SKU</th>
-          <td mat-cell *matCellDef="let item">{{ item.sku }}</td>
-        </ng-container>
-        <ng-container matColumnDef="quantity">
-          <th mat-header-cell *matHeaderCellDef>Quantity</th>
-          <td mat-cell *matCellDef="let item">{{ item.quantity }}</td>
-        </ng-container>
-        <ng-container matColumnDef="unitPrice">
-          <th mat-header-cell *matHeaderCellDef>Unit Price</th>
-          <td mat-cell *matCellDef="let item">{{ item.unitPrice | currency:'INR':'symbol':'1.2-2' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="totalValue">
-          <th mat-header-cell *matHeaderCellDef>Total Value</th>
-          <td mat-cell *matCellDef="let item">{{ item.totalValue | currency:'INR':'symbol':'1.2-2' }}</td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="stockValueColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: stockValueColumns;"></tr>
-      </table>
-    </mat-card>
+    <div class="report-section">
+      <h2 class="section-title">Stock Value Breakdown</h2>
+      <div class="card-list">
+        <div *ngFor="let item of stockValue.breakdown" class="item-card report-card">
+          <div class="report-main">
+            <div>
+              <h3>{{ item.productName }}</h3>
+              <span class="report-sku">SKU: {{ item.sku }}</span>
+            </div>
+            <div class="report-total">
+              {{ item.totalValue | currency:'INR':'symbol':'1.2-2' }}
+            </div>
+          </div>
+          <div class="report-meta">
+            <span class="meta-item">Qty: <strong>{{ item.quantity }}</strong></span>
+            <span class="meta-item">Unit Price: <strong>{{ item.unitPrice | currency:'INR':'symbol':'1.2-2' }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <mat-card>
-      <div class="table-title">Low Stock</div>
-      <table mat-table [dataSource]="lowStock.items" class="mat-card-table">
-        <ng-container matColumnDef="productName">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
-          <td mat-cell *matCellDef="let item">{{ item.productName }}</td>
-        </ng-container>
-        <ng-container matColumnDef="sku">
-          <th mat-header-cell *matHeaderCellDef matTooltip="SKU = Stock Keeping Unit">SKU</th>
-          <td mat-cell *matCellDef="let item">{{ item.sku }}</td>
-        </ng-container>
-        <ng-container matColumnDef="currentQuantity">
-          <th mat-header-cell *matHeaderCellDef>Current</th>
-          <td mat-cell *matCellDef="let item">{{ item.currentQuantity }}</td>
-        </ng-container>
-        <ng-container matColumnDef="reorderLevel">
-          <th mat-header-cell *matHeaderCellDef>Reorder Level</th>
-          <td mat-cell *matCellDef="let item">{{ item.reorderLevel }}</td>
-        </ng-container>
-        <ng-container matColumnDef="shortage">
-          <th mat-header-cell *matHeaderCellDef>Shortage</th>
-          <td mat-cell *matCellDef="let item">{{ item.shortage }}</td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="lowStockColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: lowStockColumns;"></tr>
-      </table>
-    </mat-card>
+    <div class="report-section">
+      <h2 class="section-title">Low Stock Alert</h2>
+      <div class="card-list">
+        <div *ngFor="let item of lowStock.items" class="item-card report-card danger-card">
+          <div class="report-main">
+            <div>
+              <h3>{{ item.productName }}</h3>
+              <span class="report-sku">SKU: {{ item.sku }}</span>
+            </div>
+            <div class="report-shortage">
+              <span class="status-badge danger">Shortage: {{ item.shortage }}</span>
+            </div>
+          </div>
+          <div class="report-meta">
+            <span class="meta-item">Current Qty: <strong>{{ item.currentQuantity }}</strong></span>
+            <span class="meta-item">Reorder Lvl: <strong>{{ item.reorderLevel }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

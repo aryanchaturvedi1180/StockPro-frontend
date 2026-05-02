@@ -1,48 +1,60 @@
-.loading-state {
-  display: flex;
-  justify-content: center;
-  padding: 48px 24px;
-}
-
-.alert-list {
-  display: grid;
-  gap: 16px;
-}
-
 .alert-card {
-  border-radius: 14px !important;
-  padding: 20px;
-
+  padding: var(--spacing-4) var(--spacing-5);
+  
   &.unread {
-    border-left: 4px solid #c62828;
+    border-left: 4px solid var(--danger);
+    background: var(--surface);
   }
 }
 
 .alert-content {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--spacing-4);
   align-items: center;
 }
 
 .alert-main {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
 
-  p {
-    margin: 0;
-    font-size: 15px;
-    color: #1f2937;
-  }
-
-  span {
-    color: #6b7280;
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  
+  .alert-meta {
+    color: var(--text-secondary);
     font-size: 12px;
   }
 }
 
-.empty-state {
-  color: #6b7280;
-  text-align: center;
-  padding: 24px;
+.alert-msg {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .alert-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .alert-content button {
+    align-self: flex-start;
+  }
+}
+
+.mark-all-read-btn {
+  &[disabled] {
+    background-color: #BFDBFE !important;
+    color: #FFFFFF !important;
+    cursor: not-allowed !important;
+    pointer-events: all !important; /* To allow cursor to show */
+  }
 }

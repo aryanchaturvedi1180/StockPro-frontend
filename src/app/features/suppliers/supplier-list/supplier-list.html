@@ -11,85 +11,69 @@
     </button>
   </div>
 
-  <mat-card>
-    <div class="toolbar">
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input matInput [(ngModel)]="searchTerm" placeholder="Supplier, contact, email, or phone" />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Supplier, contact, email, or phone" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="statusFilter">
-          <mat-option value="ALL">All</mat-option>
-          <mat-option value="ACTIVE">Active</mat-option>
-          <mat-option value="INACTIVE">Inactive</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusFilter">
+        <mat-option value="ALL">All</mat-option>
+        <mat-option value="ACTIVE">Active</mat-option>
+        <mat-option value="INACTIVE">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-    <div *ngIf="loading" class="loading-state">
-      <mat-spinner diameter="42"></mat-spinner>
-    </div>
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="42"></mat-spinner>
+  </div>
 
-    <div *ngIf="!loading" class="table-shell">
-      <table mat-table [dataSource]="filteredSuppliers" class="mat-card-table">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Supplier</th>
-          <td mat-cell *matCellDef="let supplier">
-            <div class="primary-cell">
-              <strong>{{ supplier.name }}</strong>
-              <span>{{ supplier.address }}</span>
-            </div>
-          </td>
-        </ng-container>
+  <div *ngIf="!loading">
+    <div *ngIf="filteredSuppliers.length > 0" class="card-grid">
+      <div *ngFor="let supplier of filteredSuppliers" class="item-card">
+        <div class="item-card-header">
+          <div>
+            <h3 class="item-title">{{ supplier.name }}</h3>
+            <p class="item-subtitle">{{ supplier.address || 'No address provided' }}</p>
+          </div>
+          <span class="status-badge" [ngClass]="(supplier.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
+            {{ supplier.isActive ? 'ACTIVE' : 'INACTIVE' }}
+          </span>
+        </div>
+        
+        <div class="item-card-body">
+          <div class="meta-row">
+            <span class="label">Contact</span>
+            <span class="value">{{ supplier.contactName || '-' }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="label">Email</span>
+            <span class="value">{{ supplier.email || '-' }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="label">Phone</span>
+            <span class="value">{{ supplier.phone || '-' }}</span>
+          </div>
+        </div>
 
-        <ng-container matColumnDef="contact">
-          <th mat-header-cell *matHeaderCellDef>Contact</th>
-          <td mat-cell *matCellDef="let supplier">{{ supplier.contactName }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Email</th>
-          <td mat-cell *matCellDef="let supplier">{{ supplier.email }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="phone">
-          <th mat-header-cell *matHeaderCellDef>Phone</th>
-          <td mat-cell *matCellDef="let supplier">{{ supplier.phone }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let supplier">
-            <span class="status-chip" [ngClass]="(supplier.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
-              {{ supplier.isActive ? 'ACTIVE' : 'INACTIVE' }}
-            </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions" *ngIf="canWrite">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let supplier">
-            <div class="row-actions">
-              <button mat-icon-button (click)="openDialog(supplier)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-stroked-button (click)="toggleStatus(supplier)">
-                {{ supplier.isActive ? 'Deactivate' : 'Activate' }}
-              </button>
-            </div>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      <div *ngIf="filteredSuppliers.length === 0" class="empty-state">
-        No suppliers match the current filters.
+        <div class="item-card-actions" *ngIf="canWrite">
+          <button mat-icon-button (click)="openDialog(supplier)" matTooltip="Edit Supplier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-stroked-button (click)="toggleStatus(supplier)">
+            {{ supplier.isActive ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
       </div>
     </div>
-  </mat-card>
+
+    <div *ngIf="filteredSuppliers.length === 0" class="empty-state">
+      <mat-icon>storefront</mat-icon>
+      <p>No suppliers match the current filters.</p>
+    </div>
+  </div>
 </div>

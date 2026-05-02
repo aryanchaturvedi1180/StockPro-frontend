@@ -1,68 +1,123 @@
-<div class="login-wrapper">
-  <mat-card class="login-card">
-    <mat-card-header>
-      <div class="login-header">
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="branding-panel">
+      <div class="branding-content">
         <h1>StockPro</h1>
-        <p>Create your account</p>
+        <p class="tagline">Track. Control. Optimise. Grow.</p>
+        <ul class="feature-list">
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Multi-warehouse inventory</span>
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Smart alerts & reorder tracking</span>
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Purchase orders & supplier control</span>
+          </li>
+        </ul>
       </div>
-    </mat-card-header>
+    </div>
 
-    <mat-card-content>
-      <div class="error-banner" *ngIf="error">{{ error }}</div>
-      <div class="success-banner" *ngIf="success">
-        Registration successful! <a routerLink="/login">Login now</a>
+    <div class="form-panel">
+      <div class="auth-card register-card">
+        <div class="top-badge">Inventory Management Platform</div>
+        
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Join the platform today</p>
+        </div>
+
+        <div class="auth-content">
+          <div class="error-banner" *ngIf="error">{{ error }}</div>
+          <div class="success-banner" *ngIf="success">
+            Registration successful! <a routerLink="/login">Login now</a>
+          </div>
+
+          <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" novalidate>
+            <div class="custom-field">
+              <label>Full Name</label>
+              <div class="input-wrapper" [class.has-error]="fullNameCtrl.invalid && (fullNameCtrl.dirty || fullNameCtrl.touched) || fieldError('fullName')">
+                <mat-icon class="input-icon">person</mat-icon>
+                <input type="text" [(ngModel)]="fullName" name="fullName" #fullNameCtrl="ngModel" required minlength="2" placeholder="John Doe" />
+              </div>
+              <div class="error-msg" *ngIf="fullNameCtrl.hasError('required') && (fullNameCtrl.dirty || fullNameCtrl.touched)">Full name is required</div>
+              <div class="error-msg" *ngIf="fullNameCtrl.hasError('minlength') && (fullNameCtrl.dirty || fullNameCtrl.touched)">Full name must be at least 2 characters</div>
+              <div class="error-msg" *ngIf="fieldError('fullName')">{{ fieldError('fullName') }}</div>
+            </div>
+
+            <div class="custom-field">
+              <label>Email</label>
+              <div class="input-wrapper" [class.has-error]="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched) || fieldError('email')">
+                <mat-icon class="input-icon">email</mat-icon>
+                <input type="email" [(ngModel)]="email" name="email" #emailCtrl="ngModel" required email placeholder="name@company.com" />
+              </div>
+              <div class="error-msg" *ngIf="emailCtrl.hasError('required') && (emailCtrl.dirty || emailCtrl.touched)">Email is required</div>
+              <div class="error-msg" *ngIf="emailCtrl.hasError('email') && (emailCtrl.dirty || emailCtrl.touched)">Enter a valid email address</div>
+              <div class="error-msg" *ngIf="fieldError('email')">{{ fieldError('email') }}</div>
+            </div>
+
+            <div class="custom-field">
+              <label>Phone</label>
+              <div class="input-wrapper" [class.has-error]="phoneCtrl.invalid && (phoneCtrl.dirty || phoneCtrl.touched) || fieldError('phone')">
+                <mat-icon class="input-icon">phone</mat-icon>
+                <input type="text" [(ngModel)]="phone" name="phone" #phoneCtrl="ngModel" pattern="^[0-9]{10}$" maxlength="10" placeholder="1234567890" />
+              </div>
+              <div class="error-msg" *ngIf="phoneCtrl.hasError('pattern') && (phoneCtrl.dirty || phoneCtrl.touched)">Phone number must be exactly 10 digits</div>
+              <div class="error-msg" *ngIf="fieldError('phone')">{{ fieldError('phone') }}</div>
+            </div>
+
+            <div class="custom-field">
+              <label>Password</label>
+              <div class="input-wrapper" [class.has-error]="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched) || fieldError('password')">
+                <mat-icon class="input-icon">lock</mat-icon>
+                <input type="password" [(ngModel)]="password" name="password" #passwordCtrl="ngModel" required minlength="6" placeholder="At least 6 characters" />
+              </div>
+              <div class="error-msg" *ngIf="passwordCtrl.hasError('required') && (passwordCtrl.dirty || passwordCtrl.touched)">Password is required</div>
+              <div class="error-msg" *ngIf="passwordCtrl.hasError('minlength') && (passwordCtrl.dirty || passwordCtrl.touched)">Password must be at least 6 characters</div>
+              <div class="error-msg" *ngIf="fieldError('password')">{{ fieldError('password') }}</div>
+            </div>
+
+            <div class="custom-field">
+              <label>Role</label>
+              <div class="input-wrapper" [class.has-error]="roleCtrl.invalid && (roleCtrl.dirty || roleCtrl.touched) || fieldError('role')">
+                <mat-icon class="input-icon">badge</mat-icon>
+                <select [(ngModel)]="role" name="role" #roleCtrl="ngModel" required (ngModelChange)="onRoleChange($event)">
+                  <option value="" disabled selected>Select Role</option>
+                  <option value="STAFF">Staff</option>
+                  <option value="MANAGER">Manager</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+                <mat-icon class="dropdown-icon">expand_more</mat-icon>
+              </div>
+              <div class="error-msg" *ngIf="roleCtrl.hasError('required') && (roleCtrl.dirty || roleCtrl.touched)">Role is required</div>
+              <div class="error-msg" *ngIf="fieldError('role')">{{ fieldError('role') }}</div>
+            </div>
+
+            <div class="custom-field" *ngIf="role === 'ADMIN'">
+              <label>Admin Secret <span class="hint-text">(Required for admin registration)</span></label>
+              <div class="input-wrapper" [class.has-error]="adminSecretCtrl.invalid && (adminSecretCtrl.dirty || adminSecretCtrl.touched) || fieldError('adminSecret')">
+                <mat-icon class="input-icon">key</mat-icon>
+                <input type="password" [(ngModel)]="adminSecret" name="adminSecret" #adminSecretCtrl="ngModel" [required]="role === 'ADMIN'" placeholder="Enter admin secret" />
+              </div>
+              <div class="error-msg" *ngIf="adminSecretCtrl.hasError('required') && (adminSecretCtrl.dirty || adminSecretCtrl.touched)">Admin secret is required for admin registration</div>
+              <div class="error-msg" *ngIf="fieldError('adminSecret')">{{ fieldError('adminSecret') }}</div>
+            </div>
+
+            <button type="submit" class="auth-btn" [disabled]="loading">
+              {{ loading ? 'Registering...' : 'Register' }}
+            </button>
+          </form>
+        </div>
+
+        <div class="auth-footer">
+          <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+        </div>
       </div>
-
-      <form (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Full Name</mat-label>
-          <input matInput [(ngModel)]="fullName" name="fullName" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" [(ngModel)]="email" name="email" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Phone</mat-label>
-          <input matInput [(ngModel)]="phone" name="phone" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" [(ngModel)]="password" name="password" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Role</mat-label>
-          <mat-select [(ngModel)]="role" name="role" (ngModelChange)="onRoleChange($event)">
-            <mat-option value="STAFF">Staff</mat-option>
-            <mat-option value="MANAGER">Manager</mat-option>
-            <mat-option value="ADMIN">Admin</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width" *ngIf="role === 'ADMIN'">
-          <mat-label>Admin Secret</mat-label>
-          <input matInput type="password" [(ngModel)]="adminSecret" name="adminSecret" [required]="role === 'ADMIN'" />
-          <mat-hint>Required for admin registration</mat-hint>
-        </mat-form-field>
-
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          class="full-width login-btn"
-          [disabled]="loading || (role === 'ADMIN' && !adminSecret.trim())"
-        >
-          {{ loading ? 'Registering...' : 'Register' }}
-        </button>
-      </form>
-    </mat-card-content>
-
-    <mat-card-actions>
-      <p class="register-link">Already have an account? <a routerLink="/login">Sign in</a></p>
-    </mat-card-actions>
-  </mat-card>
+      
+      <p class="trust-text">Secure access powered by role-based authentication</p>
+    </div>
+  </div>
 </div>

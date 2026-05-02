@@ -45,98 +45,313 @@ interface PoDialogData {
     MatIconModule
   ],
   template: `
-    <h2 mat-dialog-title>Create Purchase Order</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="dialog-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Supplier</mat-label>
-          <mat-select formControlName="supplierId">
-            <mat-option *ngFor="let supplier of data.suppliers" [value]="supplier.id">{{ supplier.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Expected Date</mat-label>
-          <input matInput type="date" formControlName="expectedDate" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-span">
-          <mat-label>Notes</mat-label>
-          <textarea matInput rows="3" formControlName="notes"></textarea>
-        </mat-form-field>
+    <div class="enterprise-dialog">
+      <div class="dialog-header">
+        <h2>Create Purchase Order</h2>
+        <p class="subtitle">Enter the supplier and order details below.</p>
+      </div>
 
-        <div class="items-section full-span">
-          <div class="items-header">
-            <h3>Items</h3>
-            <button mat-stroked-button type="button" (click)="addItem()">
-              <mat-icon>add</mat-icon>
-              Add Item
-            </button>
-          </div>
+      <div class="dialog-body">
+        <form [formGroup]="form" class="enterprise-form">
+          <div class="form-section">
+            <h3 class="section-title">Order Details</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Supplier</label>
+                <select formControlName="supplierId" class="input-field">
+                  <option [value]="0" disabled>Select a supplier</option>
+                  <option *ngFor="let supplier of data.suppliers" [value]="supplier.id">{{ supplier.name }}</option>
+                </select>
+                <span class="error-text" *ngIf="form.get('supplierId')?.invalid && form.get('supplierId')?.touched">
+                  Supplier is required
+                </span>
+              </div>
+              <div class="form-group">
+                <label>Expected Date</label>
+                <input type="date" formControlName="expectedDate" class="input-field" />
+                <span class="error-text" *ngIf="form.get('expectedDate')?.invalid && form.get('expectedDate')?.touched">
+                  Expected Date is required
+                </span>
+              </div>
+            </div>
 
-          <div formArrayName="items">
-            <div *ngFor="let item of items.controls; let index = index" [formGroupName]="index" class="item-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Product</mat-label>
-                <mat-select formControlName="productId">
-                  <mat-option *ngFor="let product of data.products" [value]="product.id">{{ product.name }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Warehouse</mat-label>
-                <mat-select formControlName="warehouseId">
-                  <mat-option *ngFor="let warehouse of data.warehouses" [value]="warehouse.id">{{ warehouse.name }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Quantity</mat-label>
-                <input matInput type="number" min="1" formControlName="quantityOrdered" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Unit Price</mat-label>
-                <input matInput type="number" min="0" formControlName="unitPrice" />
-              </mat-form-field>
-              <button mat-icon-button color="warn" type="button" (click)="removeItem(index)" [disabled]="items.length === 1">
-                <mat-icon>delete</mat-icon>
-              </button>
+            <div class="form-row">
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label>Notes</label>
+                <textarea formControlName="notes" class="input-field" rows="2" placeholder="Optional notes for this PO..."></textarea>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
-      <button mat-flat-button color="primary" type="button" [disabled]="form.invalid || items.length === 0" (click)="save()">
-        Create PO
-      </button>
-    </mat-dialog-actions>
+
+          <div class="form-section">
+            <div class="items-header-row">
+              <h3 class="section-title" style="border: none; padding: 0;">Line Items</h3>
+              <button type="button" class="btn btn-secondary btn-sm" (click)="addItem()">
+                <mat-icon style="font-size: 18px; width: 18px; height: 18px;">add</mat-icon> Add Item
+              </button>
+            </div>
+
+            <div formArrayName="items" class="items-container">
+              <div *ngFor="let item of items.controls; let index = index" [formGroupName]="index" class="item-row-card">
+                <div class="item-row-header">
+                  <span>Item {{ index + 1 }}</span>
+                  <button type="button" class="btn-icon text-danger" (click)="removeItem(index)" [disabled]="items.length === 1">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Product</label>
+                    <select formControlName="productId" class="input-field">
+                      <option [value]="0" disabled>Select product</option>
+                      <option *ngFor="let product of data.products" [value]="product.id">{{ product.name }}</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Warehouse</label>
+                    <select formControlName="warehouseId" class="input-field">
+                      <option [value]="0" disabled>Select warehouse</option>
+                      <option *ngFor="let warehouse of data.warehouses" [value]="warehouse.id">{{ warehouse.name }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row" style="margin-top: 16px;">
+                  <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" min="1" formControlName="quantityOrdered" class="input-field" />
+                  </div>
+                  <div class="form-group">
+                    <label>Unit Price</label>
+                    <div class="input-with-icon">
+                      <span class="currency-symbol">$</span>
+                      <input type="number" min="0" step="0.01" formControlName="unitPrice" class="input-field pl-8" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" (click)="dialogRef.close()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid || items.length === 0" (click)="save()">Create PO</button>
+      </div>
+    </div>
   `,
   styles: [`
-    .dialog-form {
+    :host { display: block; }
+    
+    .enterprise-dialog {
+      display: flex;
+      flex-direction: column;
+      max-height: 88vh;
+      background: var(--surface);
+      margin: -24px; 
+    }
+
+    .dialog-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+
+    .dialog-header h2 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .dialog-body {
+      padding: 32px;
+      overflow-y: auto;
+      background: var(--background);
+      flex-grow: 1;
+    }
+
+    .enterprise-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: var(--surface);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-bottom: var(--spacing-3);
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-row {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      min-width: min(980px, 92vw);
-      padding-top: 8px;
+      gap: 24px;
     }
-    .full-span { grid-column: 1 / -1; }
-    .items-header,
-    .item-row {
-      display: grid;
-      gap: 12px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px var(--spacing-3);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-primary);
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+
+    select.input-field {
+      appearance: auto;
+    }
+
+    .input-with-icon {
+      position: relative;
+      display: flex;
       align-items: center;
     }
-    .items-header {
-      grid-template-columns: 1fr auto;
-      margin-bottom: 12px;
+
+    .currency-symbol {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
     }
-    .item-row {
-      grid-template-columns: 1.5fr 1.2fr 0.8fr 0.8fr auto;
-      margin-bottom: 12px;
+
+    .pl-8 { padding-left: 28px; }
+
+    .input-field:hover { border-color: var(--text-muted); }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
-    .items-header h3 { margin: 0; }
-    @media (max-width: 960px) {
-      .dialog-form,
-      .item-row {
-        grid-template-columns: 1fr;
+    .input-field.ng-invalid.ng-touched { border-color: var(--danger); }
+    .input-field.ng-invalid.ng-touched:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+
+    .error-text {
+      font-size: 12.5px;
+      color: var(--danger);
+      margin-top: 2px;
+    }
+
+    .items-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: var(--spacing-3);
+    }
+
+    .items-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .item-row-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .item-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dialog-footer {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      border-bottom-left-radius: var(--radius-md);
+      border-bottom-right-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 10px var(--spacing-6);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn-icon { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 4px; border-radius: 4px; }
+    .btn-icon:hover { background: rgba(0,0,0,0.05); }
+    .btn-icon:disabled { opacity: 0.5; cursor: not-allowed; }
+    .text-danger { color: var(--danger); }
+
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-secondary:hover:not(:disabled) { background-color: var(--background); }
+    .btn-primary { background-color: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .dialog-header, .dialog-body, .dialog-footer {
+        padding-left: var(--spacing-5);
+        padding-right: var(--spacing-5);
       }
     }
   `]
@@ -277,7 +492,7 @@ export class PoListComponent implements OnInit {
     }
 
     this.dialog.open(PoDialogComponent, {
-      width: '980px',
+      width: 'min(92vw, 1200px)',
       data: {
         suppliers: this.suppliers.filter((supplier) => supplier.isActive),
         products: this.products.filter((product) => product.isActive),

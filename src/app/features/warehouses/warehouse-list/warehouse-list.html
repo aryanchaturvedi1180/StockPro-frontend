@@ -15,35 +15,35 @@
     <mat-spinner diameter="44"></mat-spinner>
   </div>
 
-  <div *ngIf="!loading" class="warehouse-grid">
-    <mat-card *ngFor="let warehouse of warehouses" class="warehouse-card">
-      <div class="card-top">
+  <div *ngIf="!loading" class="card-grid">
+    <div *ngFor="let warehouse of warehouses" class="item-card warehouse-card">
+      <div class="item-card-header">
         <div>
-          <h2>{{ warehouse.name }}</h2>
-          <p>{{ warehouse.location }}</p>
+          <h3 class="item-title">{{ warehouse.name }}</h3>
+          <p class="item-subtitle">{{ warehouse.location }}</p>
         </div>
 
-        <span class="status-chip" [ngClass]="(warehouse.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
+        <span class="status-badge" [ngClass]="(warehouse.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
           {{ warehouse.isActive ? 'ACTIVE' : 'INACTIVE' }}
         </span>
       </div>
 
       <div class="meta-grid">
-        <div>
-          <span>Capacity</span>
-          <strong>{{ warehouse.capacity }}</strong>
+        <div class="meta-box">
+          <span class="meta-label">Capacity</span>
+          <strong class="meta-value">{{ warehouse.capacity }}</strong>
         </div>
-        <div>
-          <span>Total Units</span>
-          <strong>{{ getWarehouseUnits(warehouse.id) }}</strong>
+        <div class="meta-box">
+          <span class="meta-label">Total Units</span>
+          <strong class="meta-value">{{ getWarehouseUnits(warehouse.id) }}</strong>
         </div>
-        <div>
-          <span>Products</span>
-          <strong>{{ getWarehouseStock(warehouse.id).length }}</strong>
+        <div class="meta-box">
+          <span class="meta-label">Products</span>
+          <strong class="meta-value">{{ getWarehouseStock(warehouse.id).length }}</strong>
         </div>
       </div>
 
-      <div class="actions" *ngIf="canWrite">
+      <div class="warehouse-actions" *ngIf="canWrite">
         <button mat-stroked-button (click)="openWarehouseDialog(warehouse)">Edit</button>
         <button mat-stroked-button (click)="toggleStatus(warehouse)">
           {{ warehouse.isActive ? 'Deactivate' : 'Activate' }}
@@ -55,11 +55,11 @@
 
       <div class="stock-panel">
         <div class="stock-header">
-          <h3>Current Stock</h3>
+          <h4>Current Stock</h4>
           <span>{{ getWarehouseStock(warehouse.id).length }} items</span>
         </div>
 
-        <div *ngIf="getWarehouseStock(warehouse.id).length === 0" class="empty-state">
+        <div *ngIf="getWarehouseStock(warehouse.id).length === 0" class="empty-msg">
           No stock recorded for this warehouse yet.
         </div>
 
@@ -68,9 +68,9 @@
             <strong>{{ stock.productName }}</strong>
             <span>Product #{{ stock.productId }}</span>
           </div>
-          <span>{{ stock.quantity }}</span>
+          <span class="stock-qty">{{ stock.quantity }}</span>
         </div>
       </div>
-    </mat-card>
+    </div>
   </div>
 </div>

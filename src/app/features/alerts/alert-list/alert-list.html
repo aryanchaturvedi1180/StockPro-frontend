@@ -5,33 +5,51 @@
       <p>{{ unreadCount }} unread alerts need attention.</p>
     </div>
 
-    <button mat-flat-button color="primary" (click)="markAllAsRead()" [disabled]="unreadCount === 0">
+    <button mat-flat-button color="primary" class="mark-all-read-btn" (click)="markAllAsRead()" [disabled]="unreadCount === 0">
       <mat-icon>done_all</mat-icon>
       Mark All Read
     </button>
+  </div>
+
+  <div class="filter-toolbar" style="margin-bottom: 24px; display: flex; gap: 8px;">
+    <mat-chip-listbox [value]="activeFilter" (change)="setFilter($event.value)">
+      <mat-chip-option value="ALL">All</mat-chip-option>
+      <mat-chip-option value="UNREAD">Unread</mat-chip-option>
+      <mat-chip-option value="READ">Read</mat-chip-option>
+      <mat-chip-option value="ACKNOWLEDGED">Acknowledged</mat-chip-option>
+    </mat-chip-listbox>
   </div>
 
   <div *ngIf="loading" class="loading-state">
     <mat-spinner diameter="42"></mat-spinner>
   </div>
 
-  <div *ngIf="!loading" class="alert-list">
-    <mat-card *ngFor="let alert of alerts" class="alert-card" [class.unread]="!alert.isRead">
+  <div *ngIf="!loading" class="card-list">
+    <div *ngFor="let alert of filteredAlerts" class="item-card alert-card" [class.unread]="!alert.isRead">
       <div class="alert-content">
         <div class="alert-main">
-          <mat-chip class="status-chip" [ngClass]="alert.alertType.toLowerCase()">{{ alert.alertType }}</mat-chip>
-          <p>{{ alert.message }}</p>
-          <span>{{ alert.createdAt | date:'medium' }} • {{ alert.referenceType }} #{{ alert.referenceId }}</span>
+          <div class="alert-header">
+            <span class="status-badge" [ngClass]="alert.alertType.toLowerCase()">{{ alert.alertType }}</span>
+            <span class="alert-meta">{{ alert.createdAt | date:'medium' }} • {{ alert.referenceType }} #{{ alert.referenceId }}</span>
+            <span *ngIf="alert.isAcknowledged" class="status-badge" style="background: #F3F4F6; color: #4B5563; margin-left: 8px;">Acknowledged</span>
+          </div>
+          <p class="alert-msg">{{ alert.message }}</p>
         </div>
 
-        <button mat-stroked-button *ngIf="!alert.isRead" (click)="markAsRead(alert)">
-          Mark Read
-        </button>
+        <div style="display: flex; gap: 8px;">
+          <button mat-stroked-button *ngIf="!alert.isRead" (click)="markAsRead(alert)">
+            Mark Read
+          </button>
+          <button mat-stroked-button *ngIf="alert.isRead && !alert.isAcknowledged" (click)="acknowledge(alert)">
+            Acknowledge
+          </button>
+        </div>
       </div>
-    </mat-card>
+    </div>
 
     <div *ngIf="alerts.length === 0" class="empty-state">
-      There are no alerts right now.
+      <mat-icon>notifications_off</mat-icon>
+      <p>There are no alerts right now.</p>
     </div>
   </div>
 </div>

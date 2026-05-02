@@ -11,10 +11,12 @@ import { AlertService } from '../../core/services/alert';
 import { PurchaseOrderService } from '../../core/services/purchase-order';
 import { AuthService } from '../../core/services/auth';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTooltipModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -49,9 +51,13 @@ export class DashboardComponent implements OnInit {
         this.totalProducts = data.products.length;
         this.activeProducts = data.products.filter(p => p.isActive).length;
         this.totalWarehouses = data.warehouses.length;
-        this.unreadAlerts = data.unread.length;
+        
+        // Filter unread alerts that are not acknowledged
+        const activeAlerts = data.alerts.filter(a => !a.isRead && !a.isAcknowledged);
+        this.unreadAlerts = activeAlerts.length;
+        this.recentAlerts = activeAlerts.slice(0, 5);
+        
         this.pendingPOs = data.pos.filter(p => p.status === 'DRAFT').length;
-        this.recentAlerts = data.alerts.slice(0, 5);
         this.draftPOs = data.pos.filter(p => p.status === 'DRAFT').slice(0, 5);
         this.loading = false;
       },

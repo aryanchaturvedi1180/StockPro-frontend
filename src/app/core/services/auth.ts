@@ -16,6 +16,9 @@ export class AuthService {
         localStorage.setItem('role', res.role);
         localStorage.setItem('fullName', res.fullName);
         localStorage.setItem('email', res.email);
+        if (res.lastLoginAt) {
+          localStorage.setItem('lastLoginAt', res.lastLoginAt);
+        }
       })
     );
   }

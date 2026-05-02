@@ -11,43 +11,48 @@
     </button>
   </div>
 
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Name, SKU, or barcode" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusFilter">
+        <mat-option value="ALL">All</mat-option>
+        <mat-option value="ACTIVE">Active</mat-option>
+        <mat-option value="INACTIVE">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <mat-card>
-    <div class="toolbar">
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input matInput [(ngModel)]="searchTerm" placeholder="Name, SKU, or barcode" />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="statusFilter">
-          <mat-option value="ALL">All</mat-option>
-          <mat-option value="ACTIVE">Active</mat-option>
-          <mat-option value="INACTIVE">Inactive</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
     <div *ngIf="loading" class="loading-state">
       <mat-spinner diameter="42"></mat-spinner>
     </div>
 
     <div *ngIf="!loading" class="table-shell">
       <table mat-table [dataSource]="filteredProducts" class="mat-card-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let product" class="font-medium text-muted">{{ product.id }}</td>
+        </ng-container>
+
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
-          <td mat-cell *matCellDef="let product">
-            <div class="primary-cell">
-              <strong>{{ product.name }}</strong>
-              <span>#{{ product.id }}</span>
-            </div>
-          </td>
+          <th mat-header-cell *matHeaderCellDef>Product Name</th>
+          <td mat-cell *matCellDef="let product" class="font-medium">{{ product.name }}</td>
         </ng-container>
 
         <ng-container matColumnDef="sku">
-          <th mat-header-cell *matHeaderCellDef matTooltip="SKU = Stock Keeping Unit">SKU</th>
+          <th mat-header-cell *matHeaderCellDef>SKU</th>
           <td mat-cell *matCellDef="let product">{{ product.sku }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="barcode">
+          <th mat-header-cell *matHeaderCellDef>Barcode</th>
+          <td mat-cell *matCellDef="let product">{{ product.barcode || '-' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="price">
@@ -56,35 +61,33 @@
         </ng-container>
 
         <ng-container matColumnDef="reorderLevel">
-          <th mat-header-cell *matHeaderCellDef>Reorder Level</th>
+          <th mat-header-cell *matHeaderCellDef>Reorder Lvl</th>
           <td mat-cell *matCellDef="let product">{{ product.reorderLevel }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="barcode">
-          <th mat-header-cell *matHeaderCellDef>Barcode</th>
-          <td mat-cell *matCellDef="let product">{{ product.barcode }}</td>
         </ng-container>
 
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let product">
-            <span class="status-chip" [ngClass]="(product.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
+            <span class="status-badge" [ngClass]="(product.isActive ? 'ACTIVE' : 'INACTIVE').toLowerCase()">
               {{ product.isActive ? 'ACTIVE' : 'INACTIVE' }}
             </span>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="actions" *ngIf="canWrite">
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Created Date</th>
+          <td mat-cell *matCellDef="let product">{{ product.createdAt | date:'mediumDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let product">
-            <div class="row-actions">
-              <button mat-icon-button (click)="openDialog(product)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-stroked-button (click)="toggleStatus(product)">
-                {{ product.isActive ? 'Deactivate' : 'Activate' }}
-              </button>
-            </div>
+          <td mat-cell *matCellDef="let product" class="actions-cell">
+            <button mat-icon-button (click)="openDialog(product)" matTooltip="Edit Product">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteProduct(product)" matTooltip="Delete Product">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </ng-container>
 
@@ -92,8 +95,9 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <div *ngIf="filteredProducts.length === 0" class="empty-state">
-        No products match the current filters.
+      <div *ngIf="filteredProducts.length === 0" class="empty-state border-none">
+        <mat-icon>inventory_2</mat-icon>
+        <p>No products match the current filters.</p>
       </div>
     </div>
   </mat-card>

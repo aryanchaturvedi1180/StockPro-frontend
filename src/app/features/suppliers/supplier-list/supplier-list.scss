@@ -1,49 +1,14 @@
 .toolbar {
   display: flex;
-  gap: 16px;
-  padding: 20px 20px 0;
+  gap: var(--spacing-4);
+  padding: 0 0 var(--spacing-5);
   flex-wrap: wrap;
+  align-items: center;
 
   mat-form-field {
-    min-width: 220px;
-    flex: 1 1 240px;
+    min-width: 240px;
+    flex: 1 1 auto;
+    max-width: 300px;
+    margin-bottom: -1.25em; 
   }
-}
-
-.loading-state {
-  display: flex;
-  justify-content: center;
-  padding: 48px 24px;
-}
-
-.table-shell {
-  padding: 0 20px 20px;
-}
-
-.primary-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  strong {
-    color: #1f2937;
-  }
-
-  span {
-    color: #6b7280;
-    font-size: 12px;
-  }
-}
-
-.row-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.empty-state {
-  padding: 24px 8px 8px;
-  color: #6b7280;
-  text-align: center;
 }

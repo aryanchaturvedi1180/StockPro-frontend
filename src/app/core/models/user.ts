@@ -25,4 +25,5 @@ export interface AuthResponse {
   email: string;
   role: string;
   fullName: string;
+  lastLoginAt?: string;
 }

@@ -6,89 +6,82 @@
     </div>
   </div>
 
-  <mat-card>
-    <div class="toolbar">
-      <mat-form-field appearance="outline">
-        <mat-label>Type</mat-label>
-        <mat-select [(ngModel)]="typeFilter">
-          <mat-option value="ALL">All types</mat-option>
-          <mat-option value="STOCK_IN">Stock In</mat-option>
-          <mat-option value="STOCK_OUT">Stock Out</mat-option>
-        </mat-select>
-      </mat-form-field>
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select [(ngModel)]="typeFilter">
+        <mat-option value="ALL">All types</mat-option>
+        <mat-option value="STOCK_IN">Stock In</mat-option>
+        <mat-option value="STOCK_OUT">Stock Out</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Product</mat-label>
-        <mat-select [(ngModel)]="productFilter">
-          <mat-option [value]="0">All products</mat-option>
-          <mat-option *ngFor="let product of products" [value]="product.id">{{ product.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Product</mat-label>
+      <mat-select [(ngModel)]="productFilter">
+        <mat-option [value]="0">All products</mat-option>
+        <mat-option *ngFor="let product of products" [value]="product.id">{{ product.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Warehouse</mat-label>
-        <mat-select [(ngModel)]="warehouseFilter">
-          <mat-option [value]="0">All warehouses</mat-option>
-          <mat-option *ngFor="let warehouse of warehouses" [value]="warehouse.id">{{ warehouse.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Warehouse</mat-label>
+      <mat-select [(ngModel)]="warehouseFilter">
+        <mat-option [value]="0">All warehouses</mat-option>
+        <mat-option *ngFor="let warehouse of warehouses" [value]="warehouse.id">{{ warehouse.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-    <div *ngIf="loading" class="loading-state">
-      <mat-spinner diameter="42"></mat-spinner>
-    </div>
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="42"></mat-spinner>
+  </div>
 
-    <div *ngIf="!loading" class="table-shell">
-      <table mat-table [dataSource]="filteredMovements" class="mat-card-table">
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let movement">{{ movement.createdAt | date:'medium' }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let movement">
-            <span class="status-chip" [ngClass]="movement.movementType.toLowerCase()">{{ movement.movementType }}</span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="product">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
-          <td mat-cell *matCellDef="let movement">{{ getProductName(movement.productId) }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="warehouse">
-          <th mat-header-cell *matHeaderCellDef>Warehouse</th>
-          <td mat-cell *matCellDef="let movement">{{ getWarehouseName(movement.warehouseId) }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="quantity">
-          <th mat-header-cell *matHeaderCellDef>Quantity</th>
-          <td mat-cell *matCellDef="let movement">{{ movement.quantity }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="reference">
-          <th mat-header-cell *matHeaderCellDef>Reference</th>
-          <td mat-cell *matCellDef="let movement">{{ movement.referenceType }} #{{ movement.referenceId }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="performedBy">
-          <th mat-header-cell *matHeaderCellDef>Performed By</th>
-          <td mat-cell *matCellDef="let movement">User #{{ movement.performedBy }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="notes">
-          <th mat-header-cell *matHeaderCellDef>Notes</th>
-          <td mat-cell *matCellDef="let movement">{{ movement.notes || '-' }}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      <div *ngIf="filteredMovements.length === 0" class="empty-state">
-        No movements match the selected filters.
+  <div *ngIf="!loading">
+    <div *ngIf="filteredMovements.length > 0" class="card-list">
+      <div *ngFor="let movement of filteredMovements" class="item-card movement-card">
+        <div class="movement-header">
+          <div class="movement-title">
+            <span class="status-badge" [ngClass]="movement.movementType.toLowerCase()">{{ movement.movementType }}</span>
+            <span class="movement-date">{{ movement.createdAt | date:'medium' }}</span>
+          </div>
+          <strong class="movement-qty" [ngClass]="{'positive': movement.movementType === 'STOCK_IN', 'negative': movement.movementType === 'STOCK_OUT'}">
+            {{ movement.movementType === 'STOCK_IN' ? '+' : '-' }}{{ movement.quantity }}
+          </strong>
+        </div>
+        
+        <div class="movement-body">
+          <div class="movement-row">
+            <div class="meta-item">
+              <span class="label">Product:</span>
+              <span class="value">{{ getProductName(movement.productId) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Warehouse:</span>
+              <span class="value">{{ getWarehouseName(movement.warehouseId) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Reference:</span>
+              <span class="value">{{ movement.referenceType }} #{{ movement.referenceId }}</span>
+            </div>
+          </div>
+          <div class="movement-row">
+            <div class="meta-item">
+              <span class="label">Performed By:</span>
+              <span class="value">User #{{ movement.performedBy }}</span>
+            </div>
+            <div class="meta-item flex-2" *ngIf="movement.notes">
+              <span class="label">Notes:</span>
+              <span class="value notes-text">{{ movement.notes }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </mat-card>
+
+    <div *ngIf="filteredMovements.length === 0" class="empty-state">
+      <mat-icon>history</mat-icon>
+      <p>No movements match the selected filters.</p>
+    </div>
+  </div>
 </div>

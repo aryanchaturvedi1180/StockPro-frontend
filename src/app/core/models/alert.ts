@@ -3,4 +3,5 @@ export interface Alert {
   id: number; alertType: AlertType;
   referenceId: number; referenceType: string;
   message: string; isRead: boolean; createdAt: string;
+  isAcknowledged?: boolean;
 }

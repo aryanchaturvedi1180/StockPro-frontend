@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -18,7 +19,7 @@ import { WarehouseService } from '../../../core/services/warehouse';
 @Component({
   selector: 'app-movement-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule, MatTableModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatIconModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './movement-list.html',
   styleUrl: './movement-list.scss'
 })

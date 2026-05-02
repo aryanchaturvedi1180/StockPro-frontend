@@ -38,43 +38,57 @@ interface TransferDialogData {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   template: `
-    <h2 mat-dialog-title>{{ data.warehouse ? 'Edit Warehouse' : 'Add Warehouse' }}</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="dialog-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Location</mat-label>
-          <input matInput formControlName="location" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-span">
-          <mat-label>Capacity</mat-label>
-          <input matInput type="number" min="0" formControlName="capacity" />
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
-      <button mat-flat-button color="primary" type="button" [disabled]="form.invalid" (click)="save()">Save</button>
-    </mat-dialog-actions>
+    <div class="enterprise-dialog">
+      <div class="dialog-header">
+        <h2>{{ data.warehouse ? 'Edit Warehouse' : 'Add Warehouse' }}</h2>
+        <p class="subtitle">Please fill in the details below.</p>
+      </div>
+      <div class="dialog-body">
+        <form [formGroup]="form" class="enterprise-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" formControlName="name" class="input-field" placeholder="e.g. Main Warehouse" />
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" formControlName="location" class="input-field" placeholder="e.g. New York, NY" />
+            </div>
+          </div>
+          <div class="form-row single-col">
+            <div class="form-group">
+              <label>Capacity</label>
+              <input type="number" min="0" formControlName="capacity" class="input-field" placeholder="e.g. 5000" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" (click)="dialogRef.close()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="save()">Save</button>
+      </div>
+    </div>
   `,
   styles: [`
-    .dialog-form {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      min-width: min(680px, 80vw);
-      padding-top: 8px;
-    }
-    .full-span { grid-column: 1 / -1; }
-    @media (max-width: 680px) {
-      .dialog-form {
-        grid-template-columns: 1fr;
-        min-width: auto;
-      }
-    }
+    :host { display: block; }
+    .enterprise-dialog { display: flex; flex-direction: column; max-height: 88vh; background: var(--surface); margin: -24px; }
+    .dialog-header { padding: 24px 32px; border-bottom: 1px solid var(--border); background: var(--surface); border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); flex-shrink: 0; }
+    .dialog-header h2 { margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: var(--text-primary); }
+    .subtitle { margin: 0; font-size: 14px; color: var(--text-secondary); }
+    .dialog-body { padding: 32px; overflow-y: auto; background: var(--surface); flex-grow: 1; }
+    .enterprise-form { display: flex; flex-direction: column; gap: 24px; }
+    .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .form-row.single-col { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    label { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+    .input-field { width: 100%; padding: 10px var(--spacing-3); font-size: 14px; font-family: inherit; color: var(--text-primary); background-color: var(--surface); border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; }
+    .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+    .dialog-footer { padding: 24px 32px; border-top: 1px solid var(--border); background: var(--surface); display: flex; justify-content: flex-end; gap: 16px; border-bottom-left-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); flex-shrink: 0; }
+    .btn { padding: 10px var(--spacing-6); font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; border: none; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-primary { background-color: var(--primary); color: white; }
+    @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
   `]
 })
 export class WarehouseDialogComponent {
@@ -286,7 +300,7 @@ export class WarehouseListComponent implements OnInit {
 
   openWarehouseDialog(warehouse: Warehouse | null = null): void {
     if (!this.canWrite) return;
-    this.dialog.open(WarehouseDialogComponent, { width: '700px', data: { warehouse } })
+    this.dialog.open(WarehouseDialogComponent, { width: 'min(92vw, 820px)', data: { warehouse } })
       .afterClosed()
       .subscribe((payload?: WarehouseRequest) => {
         if (!payload) return;

@@ -1,0 +1,53 @@
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: Inter, Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.enterprise-form-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+}
+
+.enterprise-form-dialog .mat-mdc-dialog-content {
+  width: 100%;
+  max-width: 100%;
+  max-height: min(72vh, 720px);
+  overflow-x: hidden;
+}
+
+.mat-mdc-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-button-base:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55;
+}

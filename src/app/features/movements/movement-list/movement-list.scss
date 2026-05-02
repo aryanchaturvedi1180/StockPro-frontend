@@ -1,54 +1,86 @@
-.page-container {
-  --surface: rgba(255, 255, 255, 0.72);
-  --border: rgba(15, 23, 42, 0.08);
-  --text: #0f172a;
-  --muted: #64748b;
-  --shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
-  font-family: "Segoe UI", "Calibri", "Trebuchet MS", sans-serif;
-}
-
-.page-header h1 {
-  color: var(--text);
-  letter-spacing: 0.2px;
-}
-
-.page-header p {
-  color: var(--muted);
-}
-
-.page-container mat-card {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  background: var(--surface);
-  backdrop-filter: blur(4px);
-}
-
 .toolbar {
   display: flex;
-  gap: 16px;
-  padding: 20px 20px 0;
+  gap: var(--spacing-4);
+  padding: 0 0 var(--spacing-5);
   flex-wrap: wrap;
+  align-items: center;
 
   mat-form-field {
-    min-width: 220px;
-    flex: 1 1 220px;
+    min-width: 200px;
+    flex: 1 1 auto;
+    max-width: 260px;
+    margin-bottom: -1.25em; 
   }
 }
 
-.loading-state {
+.movement-card {
+  padding: var(--spacing-4) var(--spacing-5);
+}
+
+.movement-header {
   display: flex;
-  justify-content: center;
-  padding: 48px 24px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-4);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 1px dashed var(--border);
+  
+  .movement-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  
+  .movement-date {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  
+  .movement-qty {
+    font-size: 18px;
+    font-weight: 700;
+    
+    &.positive { color: var(--success); }
+    &.negative { color: var(--danger); }
+  }
 }
 
-.table-shell {
-  padding: 0 20px 20px;
-  overflow-x: auto;
-}
+.movement-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  
+  .movement-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+  }
 
-.empty-state {
-  padding: 24px 8px 8px;
-  color: #6b7280;
-  text-align: center;
+  .meta-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-2);
+    flex: 1 1 200px;
+    
+    &.flex-2 {
+      flex: 2 1 400px;
+    }
+    
+    .label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .notes-text {
+      color: var(--text-muted);
+      font-style: normal;
+      font-weight: 400;
+    }
+  }
 }

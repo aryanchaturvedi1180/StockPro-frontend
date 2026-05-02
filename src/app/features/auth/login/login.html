@@ -1,39 +1,71 @@
-<div class="login-wrapper">
-  <mat-card class="login-card">
-    <mat-card-header>
-      <div class="login-header">
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="branding-panel">
+      <div class="branding-content">
         <h1>StockPro</h1>
-        <p>Inventory Management System</p>
+        <p class="tagline">Track. Control. Optimise. Grow.</p>
+        <ul class="feature-list">
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Multi-warehouse inventory</span>
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Smart alerts & reorder tracking</span>
+          </li>
+          <li>
+            <mat-icon>check_circle</mat-icon>
+            <span>Purchase orders & supplier control</span>
+          </li>
+        </ul>
       </div>
-    </mat-card-header>
+    </div>
 
-    <mat-card-content>
-      <div class="error-banner" *ngIf="error">{{ error }}</div>
+    <div class="form-panel">
+      <div class="auth-card">
+        <div class="top-badge">Inventory Management Platform</div>
+        
+        <div class="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Login to your account</p>
+        </div>
 
-      <form (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" [(ngModel)]="email" name="email" required placeholder="admin@stockpro.com" />
-          <mat-icon matSuffix>email</mat-icon>
-        </mat-form-field>
+        <div class="auth-content">
+          <div class="error-banner" *ngIf="error">{{ error }}</div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required />
-          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
+          <form (ngSubmit)="onSubmit()">
+            <div class="custom-field">
+              <label>Email</label>
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">email</mat-icon>
+                <input type="email" [(ngModel)]="email" name="email" required placeholder="admin@stockpro.com" />
+              </div>
+            </div>
 
-        <button mat-raised-button color="primary" type="submit" class="full-width login-btn" [disabled]="loading">
-          <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-          <span *ngIf="!loading">Sign In</span>
-        </button>
-      </form>
-    </mat-card-content>
+            <div class="custom-field">
+              <label>Password</label>
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">lock</mat-icon>
+                <input [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required placeholder="Enter password" />
+                <button type="button" class="icon-btn" (click)="hidePassword = !hidePassword">
+                  <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+            </div>
 
-    <mat-card-actions>
-      <p class="register-link">Don't have an account? <a routerLink="/register">Register</a></p>
-    </mat-card-actions>
-  </mat-card>
+            <button type="submit" class="auth-btn" [disabled]="loading">
+              <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+              <span *ngIf="!loading">Sign In</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="auth-footer">
+          <p>Don't have an account? <a routerLink="/register">Register</a></p>
+        </div>
+      </div>
+      
+      <p class="trust-text">Secure access powered by role-based authentication</p>
+    </div>
+  </div>
 </div>

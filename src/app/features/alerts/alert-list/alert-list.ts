@@ -20,6 +20,7 @@ import { AlertService } from '../../../core/services/alert';
 export class AlertListComponent implements OnInit {
   loading = true;
   alerts: Alert[] = [];
+  activeFilter: 'ALL' | 'UNREAD' | 'READ' | 'ACKNOWLEDGED' = 'ALL';
 
   constructor(private alertService: AlertService, private snackBar: MatSnackBar) {}
 
@@ -31,6 +32,23 @@ export class AlertListComponent implements OnInit {
     return this.alerts.filter((alert) => !alert.isRead).length;
   }
 
+  get filteredAlerts(): Alert[] {
+    switch (this.activeFilter) {
+      case 'UNREAD':
+        return this.alerts.filter(a => !a.isRead);
+      case 'READ':
+        return this.alerts.filter(a => a.isRead);
+      case 'ACKNOWLEDGED':
+        return this.alerts.filter(a => a.isAcknowledged);
+      default:
+        return this.alerts;
+    }
+  }
+
+  setFilter(filter: 'ALL' | 'UNREAD' | 'READ' | 'ACKNOWLEDGED'): void {
+    this.activeFilter = filter;
+  }
+
   markAsRead(alert: Alert): void {
     this.alertService.markAsRead(alert.id).subscribe({
       next: () => {
@@ -38,6 +56,16 @@ export class AlertListComponent implements OnInit {
         this.loadAlerts();
       },
       error: (error) => this.showError(error.error?.message || 'Unable to mark alert as read')
+    });
+  }
+
+  acknowledge(alert: Alert): void {
+    this.alertService.acknowledge(alert.id).subscribe({
+      next: () => {
+        this.snackBar.open('Alert acknowledged', 'Close', { duration: 2500 });
+        this.loadAlerts();
+      },
+      error: () => this.showError('Unable to acknowledge alert')
     });
   }
 
